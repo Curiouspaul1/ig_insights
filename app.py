@@ -8,11 +8,24 @@ app = Flask(__name__)
 nxt, client = None, None
 
 
+def update_obj(obj):
+    if obj['comments_count'] != 0:
+        obj.update(
+            {
+                'like_comment_ratio':obj['like_count']/obj['comments_count']
+            }
+        )
+    else:
+        obj.update({
+            'like_comment_ratio': None
+        })
+    return obj
+
+
 @app.get('/')
 def get_hashtag_posts():
     global client
     global nxt
-    print(request.args.get('hashtag'))
     client = Insights(
         os.getenv('user_id'),
         os.getenv('access_token'),
@@ -20,9 +33,17 @@ def get_hashtag_posts():
     )
     data = client.fetch_hashtag_posts()
     nxt = data['paging']['cursors']['after']
-    print(data['paging']['cursors'])
+
+    data = data['data']
+
+    # calculate like to comment ratio on each item
+    mods = map(
+        update_obj,
+        data
+    )
+
     return jsonify(
-       data['data']
+        list(mods)
     )
 
 
@@ -37,8 +58,17 @@ def fetch_next():
 
     nxt = data['paging']['cursors']['after']
 
-    return jsonify(
-        data['data']
+    # calculate like to comment ratio on each item
+    data = data['data']
+    
+    mods = map(
+        update_obj,
+        data
     )
+
+    return jsonify(
+        list(mods)
+    )
+
 
 app.run(debug=True)

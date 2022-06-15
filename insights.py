@@ -52,7 +52,7 @@ class Insights:
     
     def fetch_hashtag_posts(self, hashtag_id: Optional[str] = None, after: Optional[str]=None):
         params = {
-            'fields': 'like_count,id,comments_count,media_type,media_url,children,permalink',
+            'fields': 'like_count,id,comments_count,media_type,media_url,permalink',
             'pretty': 0
         }
         if after:
