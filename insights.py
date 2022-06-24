@@ -26,10 +26,11 @@ load_dotenv()
 class Insights:
     BASE_URL = "https://graph.facebook.com/v14.0"
 
-    def __init__(self, user_id, token, hashtag):
+    def __init__(self, user_id, token, hashtag, endpoint):
         self.user_id = user_id
         self.token = token
         self.hashtag = hashtag
+        self.endpoint = endpoint
     
     def append_params(self, url, params: Optional[str] = None):
         url = url+f"?user_id={self.user_id}&access_token={self.token}"
@@ -61,7 +62,7 @@ class Insights:
             hashtag_id = self.fetch_hashtag_id()
         if hashtag_id:
             posts = requests.get(
-                url=self.append_params(f"{Insights.BASE_URL}/{hashtag_id}/recent_media", params)
+                url=self.append_params(f"{Insights.BASE_URL}/{hashtag_id}/{self.endpoint}", params)
             )
             if posts.status_code == 200:
                 return posts.json()
