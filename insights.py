@@ -76,19 +76,20 @@ class Insights:
         #     print(posts.json())
         #     return None
     
-    def post_insight(self, post):
-        params = {
-            'metric': 'impressions,reach,engagement'
-        }
-        res = requests.get(
-            url=f"{self.append_params('{}/{}/insights'.format(Insights.BASE_URL, post))}"
-        )
-        print(f"{self.append_params('{}/{}/insights'.format(Insights.BASE_URL, post))}")
-        if res.status_code == 200:
-            return res.json()
-        print(res.json())
+    # def post_insight(self, post):
+    #     params = {
+    #         'metric': 'impressions,reach,engagement'
+    #     }
+    #     res = requests.get(
+    #         url=f"{self.append_params('{}/{}/insights'.format(Insights.BASE_URL, post))}"
+    #     )
+    #     print(f"{self.append_params('{}/{}/insights'.format(Insights.BASE_URL, post))}")
+    #     if res.status_code == 200:
+    #         return res.json()
+    #     print(res.json())
     
-    def fetch_posts_insight(self, posts: Optional[List] = None):
-        if not posts:
-            posts = self.fetch_hashtag_posts(self.hashtag)
-        return posts
+    # def fetch_posts_insight(self, posts: Optional[List] = None):
+    #     if not posts:
+    #         posts = self.fetch_hashtag_posts(self.hashtag)
+    #     return posts
+            

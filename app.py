@@ -2,24 +2,11 @@ from insights import Insights
 from dotenv import load_dotenv
 import os
 from flask import Flask, request, jsonify
+from utils import *
 
 app = Flask(__name__)
 
 nxt, client = None, None
-
-
-def update_obj(obj):
-    if obj['comments_count'] != 0:
-        obj.update(
-            {
-                'like_comment_ratio':obj['like_count']/obj['comments_count']
-            }
-        )
-    else:
-        obj.update({
-            'like_comment_ratio': None
-        })
-    return obj
 
 
 @app.get('/')
@@ -37,14 +24,21 @@ def get_hashtag_posts():
     data = data['data']
 
     # calculate like to comment ratio on each item
-    mods = map(
+    data = map(
         update_obj,
         data
     )
 
-    return jsonify(
-        list(mods)
-    )
+    data = list(data)
+
+    if 'sort' in request.args:
+        param = request.args.get('sort')
+        resp = sort_by_param(param, data)
+
+        return jsonify(
+            resp
+        )
+    return jsonify(data)
 
 
 @app.get('/next')
