@@ -1,7 +1,7 @@
 from insights import Insights
 from dotenv import load_dotenv
 import os
-from flask import Flask, request, jsonify, make_response, abort
+from flask import Flask, request, jsonify, make_response, abort, url_for
 from utils import *
 
 app = Flask(__name__)
@@ -102,5 +102,33 @@ def fetch_next():
         )
 
     return jsonify(data)
+
+
+@app.get('/redr')
+def redr():
+    return "token refreshed"
+
+@app.get('/refresh_token')
+def refresh_token():
+    import requests
+    url = "https://graph.facebook.com/v14.0/oauth/access_token"
+    print(url_for('redr'))
+    p = {
+        'access_token': os.getenv('access_token'),
+        'client_secret':  os.getenv('client_secret'),
+        'client_id': os.getenv('client_id'),
+        'grant_type': 'fb_exchange_token',
+        'fb_exchange_token': os.getenv('access_token'),
+        'redirect_uri': f"http://localhost:5000{url_for('redr')}"
+    }
+    print(p)
+    res = requests.get(
+        url=url,
+        params=p
+    )
+    res = res.json()
+    if 'access_token' in res:
+        os.environ['access_token'] = res['access_token']
+    return res
 
 app.run(debug=True)
