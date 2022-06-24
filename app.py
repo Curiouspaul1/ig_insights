@@ -131,4 +131,5 @@ def refresh_token():
         os.environ['access_token'] = res['access_token']
     return res
 
-app.run(debug=True)
+if __name__ == '__main__':
+    app.run()
